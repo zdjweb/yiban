@@ -1,0 +1,24 @@
+/* 初始化样式 */
+*{
+    overflow: hidden;
+    font-size: 0;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+/* 隐藏页面滚动条 */
+*::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+}
+/* 初始化body样式 */
+body{
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+/* 提示文字 */
+.registerMsg:empty::after{
+    content: attr(placeholder);
+    color: #807f7f;
+}

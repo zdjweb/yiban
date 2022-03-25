@@ -1,0 +1,23 @@
+/* 初始化样式 */
+*{
+    overflow: hidden;
+    scrollbar-width: none;
+    font-size: 0;
+    user-select: none;
+}
+/* 隐藏页面滚动条 */
+*::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+}
+/* 初始化body样式 */
+body{
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+/* 搜索框提示 */
+.search:empty::after{
+    content: attr(placeholder);
+}
