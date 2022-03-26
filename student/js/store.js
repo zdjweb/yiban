@@ -28,16 +28,17 @@ const storeAdBox = addAdBox(storeMain);
 Object.assign(storeAdBox.style,{
     height: '56.25vw'
 });
+//积分商城页面广告按钮容器
+const storeAdBtnBox = addAdBtnBox(storeMain);
 let storeAd = new adImg({
     container: storeAdBox,
+    btnContainer: storeAdBtnBox,
     size: 56.25
 });
 storeAd.addImg('img/5.jpg');
 storeAd.addImg('6.jpg');
 storeAd.addImg('img/7.jpg');
 storeAd.addImg('img/8.jpg');
-//积分商城页面广告按钮容器
-const storeAdBtnBox = addAdBtnBox(storeMain);
 //积分商城页面信息容器
 const storeBox = z.addElementByArray([
     'div',

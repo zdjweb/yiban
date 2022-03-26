@@ -109,3 +109,12 @@ function indexAdBoxMarginTopSet(){
 indexAdBoxMarginTopSet();
 //首页广告按钮容器
 const indexAdBtnBox = addAdBtnBox(indexMain);
+const indexAd = new adImg({
+    container: indexAdBox,
+    btnContainer: indexAdBtnBox,
+    size: 60
+});
+indexAd.addImg('img/1.jpg');
+indexAd.addImg('2.jpg');
+indexAd.addImg('img/3.jpg');
+indexAd.addImg('img/4.jpg');

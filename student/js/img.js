@@ -2,6 +2,7 @@ class adImg{
     constructor(e){
         const imgBox = [];
         const img = [];
+        const btn = [];
         //当前播放的广告
         let now = 0;
         //准备播放的广告
@@ -22,6 +23,13 @@ class adImg{
         let autoTimer;
         //广告图片轮播动画定时器
         let moveTimer;
+        //按钮重设
+        function btnReSet(element,n){
+            Object.assign(element.style,{
+                width: ['2.5vw','5.25vw'][n],
+                background: ['#f6c671','#fc9b56'][n]
+            });
+        }
         //判断广告图片是否存在并修正
         function nReSet(n){
             if(n < 0){
@@ -31,7 +39,96 @@ class adImg{
             }
             return n;
         }
-
+        //广告图片复位功能
+        function imgReSet(){
+            if(z.strRemove(imgBox[now].style.marginLeft) < -45){
+                if(z.strRemove(imgBox[now].style.marginLeft) > -90){
+                    if(z.strRemove(imgBox[now].style.marginLeft) - 1 <= -90){
+                        imgBox[now].style.marginLeft = '-90vw';
+                        imgBox[next].style.marginLeft = 0;
+                        clearInterval(timer);
+                        btnReSet(btn[now],0);
+                        now = nReSet(++now);
+                        btnReSet(btn[now],1)
+                        next = now;
+                        autoPlaySet();
+                    }else{
+                        imgBox[now].style.marginLeft = z.strRemove(imgBox[now].style.marginLeft) - 1 + 'vw';
+                        imgBox[next].style.marginLeft = z.strRemove(imgBox[next].style.marginLeft) - 1 + 'vw';
+                    }
+                }
+            }else if(z.strRemove(imgBox[now].style.marginLeft) > 45){
+                if(z.strRemove(imgBox[now].style.marginLeft) < 90){
+                    if(z.strRemove(imgBox[now].style.marginLeft) + 1 >= 90){
+                        imgBox[now].style.marginLeft = '90vw';
+                        imgBox[next].style.marginLeft = 0;
+                        clearInterval(timer);
+                        btnReSet(btn[now],0);
+                        now = nReSet(--now);
+                        btnReSet(btn[now],1);
+                        next = now;
+                        autoPlaySet();
+                    }else{
+                        imgBox[now].style.marginLeft = z.strRemove(imgBox[now].style.marginLeft) + 1 + 'vw';
+                        imgBox[next].style.marginLeft = z.strRemove(imgBox[next].style.marginLeft) + 1 + 'vw';
+                    }
+                }
+            }else{
+                if(z.strRemove(imgBox[now].style.marginLeft) < 0){
+                    if(z.strRemove(imgBox[now].style.marginLeft) + 1 > 0){
+                        imgBox[now].style.marginLeft = 0;
+                        imgBox[next].style.marginLeft = '90vw';
+                        clearInterval(timer);
+                        next = now;
+                        autoPlaySet();
+                    }else{
+                        imgBox[now].style.marginLeft = z.strRemove(imgBox[now].style.marginLeft) + 1 + 'vw';
+                        imgBox[next].style.marginLeft = z.strRemove(imgBox[next].style.marginLeft) + 1 + 'vw';
+                    }
+                }else{
+                    if(z.strRemove(imgBox[now].style.marginLeft) - 1 < 0){
+                        imgBox[now].style.marginLeft = 0;
+                        imgBox[next].style.marginLeft = '-90vw';
+                        clearInterval(timer);
+                        next = now;
+                        autoPlaySet();
+                    }else{
+                        imgBox[now].style.marginLeft = z.strRemove(imgBox[now].style.marginLeft) - 1 + 'vw';
+                        imgBox[next].style.marginLeft = z.strRemove(imgBox[next].style.marginLeft) - 1 + 'vw';
+                    }
+                }
+            }
+        }
+        //广告图片轮播动画
+        function move(){
+            if(z.strRemove(imgBox[now].style.marginLeft) - 1 <= -90){
+                imgBox[now].style.marginLeft = '-90vw';
+                imgBox[next].style.marginLeft = 0;
+                btnReSet(btn[now],0);
+                now = next;
+                btnReSet(btn[now],1);
+                clearInterval(moveTimer);
+                autoTimer = null;
+                next = now;
+                autoPlaySet();
+            }else{
+                imgBox[now].style.marginLeft = z.strRemove(imgBox[now].style.marginLeft) - 1 + 'vw';
+                imgBox[next].style.marginLeft = z.strRemove(imgBox[next].style.marginLeft) - 1 + 'vw';
+            }
+        }
+        //设置广告图片自动轮播
+        function autoPlay(){
+            next = nReSet(now + 1);
+            imgBox[now].style.marginLeft = 0;
+            imgBox[next].style.marginLeft = '90vw';
+            moveTimer = setInterval(move,5);
+        }
+        //设置广告图片自动轮播定时
+        function autoPlaySet(){
+            if(autoTimer == null && img.length > 1){
+                autoTimer = setTimeout(autoPlay,3000);
+            }
+        }
         //设置广告容器触摸开始的功能
         e.container.addEventListener('touchstart',(event) => {
             event.preventDefault();
@@ -43,6 +140,7 @@ class adImg{
                 x = event.touches[0].clientX;
             }
         });
+        //设置广告容器触摸移动的功能
         e.container.addEventListener('touchmove',(event) => {
             event.preventDefault();
             if(x != null){
@@ -65,7 +163,7 @@ class adImg{
                             imgBox[next].style.marginLeft = -90 + z.strRemove(imgBox[now].style.marginLeft) + 'vw';
                         }
                     }else{
-                        if(z.strRemove(imgBox[next].style.marginLeft) <= 0){
+                        if(z.strRemove(imgBox[now].style.marginLeft) <= 0){
                             turn = 0;
                             next = nReSet(now + 1);
                             imgBox[next].style.marginLeft = 90 + z.strRemove(imgBox[now].style.marginLeft) + 'vw';
@@ -73,13 +171,18 @@ class adImg{
                     }
                 }
                 if(!direction && z.strRemove(imgBox[next].style.marginLeft) <= 0 && !turn){
-                    
+                    btnReSet(btn[now],0);
                     now = next;
-
+                    btnReSet(btn[now],1);
+                    next = nReSet(++next);
+                    imgBox[next].style.marginLeft = 90 + z.strRemove(imgBox[now].style.marginLeft) + 'vw';
                 }
                 if(direction && z.strRemove(imgBox[next].style.marginLeft) >= 0 && !turn){
-
+                    btnReSet(btn[now],0);
                     now = next;
+                    btnReSet(btn[now],1);
+                    next = nReSet(--next);
+                    imgBox[next].style.marginLeft = -90 + z.strRemove(imgBox[now].style.marginLeft) + 'vw';
                 }
             }
         });
@@ -92,9 +195,9 @@ class adImg{
                 clearInterval(autoTimer);
                 autoTimer = null;
                 if(now != next){
-                    timer = setInterval(,5);
+                    timer = setInterval(imgReSet,5);
                 }else{
-
+                    autoPlaySet();
                 }
             }
         });
@@ -111,8 +214,34 @@ class adImg{
             ],e.container));
             img.push(z.addElementByArray([
                 'img',
-                'src',src
+                'src',src,
+                'cross-origin','Anonymous',
+                'function',[
+                    'load',() => {
+                        imgSizeReSet();
+                    },
+                    'error',function(){
+                        const n = img.indexOf(this);
+                        imgBox.splice(n,1);
+                        img.splice(n,1);
+                        e.btnContainer.removeChild(btn[n]);
+                        btn.splice(n,1);
+                    }
+                ]
             ],imgBox[imgBox.length - 1]));
+            imgSizeReSet();
+            btn.push(z.addElementByArray([
+                'div',
+                'style',[
+                    'display','inline-block',
+                    'vertical-align','top',
+                    'margin','0 1.5vw',
+                    'height','2.5vw',
+                    'border-radius','1.25vw'
+                ]
+            ],e.btnContainer));
+            btnReSet(btn[btn.length - 1],btn.length - 1 == now?1:0);
+            autoPlaySet();
         }
         let imgSizeReSet = () => {
             for(let i in img){
@@ -128,7 +257,7 @@ class adImg{
                         marginTop: 0,
                         marginLeft: (90 - e.size / img[i].offsetHeight * img[i].offsetWidth) / 2 + 'vw',
                         width: 'auto',
-                        height: '56.25vw'
+                        height: e.size + 'vw'
                     });
                 }
             }

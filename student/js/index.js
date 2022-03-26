@@ -94,7 +94,7 @@ function addAdBox(container){
 //创建广告按钮容器
 function addAdBtnBox(container){
     return z.addElementByArray([
-        'main',
+        'div',
         'style',[
             'margin','0 0.5vw',
             'padding','3.75vw 0',
