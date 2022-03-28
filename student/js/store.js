@@ -176,3 +176,48 @@ addStoreMsg('1.jpg','名字超级超级超级超级超级长的蓝牙耳机',30,
 addStoreMsg('1.jpg','蓝牙音箱',50,10);
 //积分商城页面灰色遮罩
 const storeGrey = addGrey(store);
+//积分商城页面确认容器
+const storeSure = z.addElementByArray([
+    'div',
+    'style',[
+        'margin','calc((100vh - 59vw) / 2) 20vw',
+        'width','60vw',
+        'height','30vw',
+        'border-radius','3vw',
+        'background','#FFFFFF'
+    ]
+],storeGrey);
+//积分商城页面确认容器文字信息
+setFontSize(4.5,8,z.addElementByArray([
+    'div',
+    'innerHTML','是否确认兑换？',
+    'style',[
+        'padding','5.75vw 0',
+        'width','60vw',
+        'height','8vw',
+        'border-bottom','0.5vw solid #f6b05e',
+        'text-align','center',
+        'color','#232325'
+    ]
+],storeSure));
+//积分商城页面确认容器按钮
+for(let i = 0;i < 2;i++){
+    setFontSize(4.5,10,z.addElementByArray([
+        'div',
+        'innerHTML',['是','否'][i],
+        'style',[
+            'display','inline-block',
+            'vertical-align','top',
+            'width','29.75vw',
+            'height','10vw',
+            'border-right',['0.5vw solid #f6b05e',''][i],
+            'text-align','center',
+            'color','#232325'
+        ],
+        'function',[
+            'click',() => {
+                storeGrey.style.display = 'none';
+            }
+        ]
+    ],storeSure));
+}

@@ -63,6 +63,7 @@ function addRegisterMsg(placeholder){
             'border-radius','1.5vw',
             'background','#f5f5f5',
             'color','#232325',
+            'overflow','visible',
             'font-size',z.getFontSize(4),
             'line-height',z.getFontSize(8)
         ]
@@ -85,6 +86,21 @@ addRegisterMsgName('劳动名称');
 //劳动登记页面劳动名称输入框
 const registerActName = addRegisterMsg();
 registerActName.contentEditable = true;
+registerActName.addEventListener('input',function(){
+    let Msg = this.innerHTML;
+    let enterPress = 0;
+    if(Msg.split('<br>').length > 1 && Msg.split('<br>')[Msg.split('<br>').length - 1] == ''){
+        let n = 2;
+        let j = Msg.split('<br>')[Msg.split('<br>').length - n];
+        while(j == '' && Msg.split('<br>').length - n > 0){
+            enterPress++;
+            n++;
+            j = Msg.split('<br>')[Msg.split('<br>').length - n];
+        }
+    }
+    this.style.height = window.innerWidth * 0.08 + 'px';
+    this.style.height = Math.round((this.scrollHeight) / (window.innerWidth * 0.08) + enterPress) * (window.innerWidth * 0.08) + 'px';
+});
 //劳动登记页面信息分割线
 addRegisterHr();
 //劳动登记页面劳动类别提示信息
@@ -116,7 +132,7 @@ Object.assign(registerActStartTime.style,{
     width: '15vw',
     textAlign: 'center'
 });
-//劳动登记页面”至“字
+//劳动登记页面“至”字
 const registerTo = z.addElementByArray([
     'div',
     'innerHTML','至',
@@ -178,6 +194,21 @@ addRegisterMsgName('劳动地点');
 //劳动登记页面劳动地点输入框
 const registerActAddress = addRegisterMsg();
 registerActAddress.contentEditable = true;
+registerActAddress.addEventListener('input',function(){
+    let Msg = this.innerHTML;
+    let enterPress = 0;
+    if(Msg.split('<br>').length > 1 && Msg.split('<br>')[Msg.split('<br>').length - 1] == ''){
+        let n = 2;
+        let j = Msg.split('<br>')[Msg.split('<br>').length - n];
+        while(j == '' && Msg.split('<br>').length - n > 0){
+            enterPress++;
+            n++;
+            j = Msg.split('<br>')[Msg.split('<br>').length - n];
+        }
+    }
+    this.style.height = window.innerWidth * 0.08 + 'px';
+    this.style.height = Math.round((this.scrollHeight) / (window.innerWidth * 0.08) + enterPress) * (window.innerWidth * 0.08) + 'px';
+});
 //劳动登记页面信息分割线
 addRegisterHr();
 //劳动登记页面完成情况提示信息
@@ -186,6 +217,25 @@ addRegisterMsgName('完成情况');
 const registerActState = addRegisterMsg();
 registerActState.style.height = '24vw';
 registerActState.contentEditable = true;
+registerActState.addEventListener('input',function(){
+    let Msg = this.innerHTML;
+    let enterPress = 0;
+    if(Msg.split('<br>').length > 1 && Msg.split('<br>')[Msg.split('<br>').length - 1] == ''){
+        let n = 2;
+        let j = Msg.split('<br>')[Msg.split('<br>').length - n];
+        while(j == '' && Msg.split('<br>').length - n > 0){
+            enterPress++;
+            n++;
+            j = Msg.split('<br>')[Msg.split('<br>').length - n];
+        }
+    }
+    this.style.height = window.innerWidth * 0.08 + 'px';
+    if(Math.round((this.scrollHeight) / (window.innerWidth * 0.08) + enterPress) > 3){
+        this.style.height = Math.round((this.scrollHeight) / (window.innerWidth * 0.08) + enterPress) * (window.innerWidth * 0.08) + 'px';
+    }else{
+        this.style.height = window.innerWidth * 0.08 * 3 + 'px';
+    }
+});
 //劳动登记页面信息分割线
 addRegisterHr();
 //劳动登记页面现场图片提示信息
@@ -287,8 +337,60 @@ const registerSubmitBtn = z.addElementByArray([
         'color','#232325',
         'font-size',z.getFontSize(4),
         'line-height',z.getFontSize(8.2)
+    ],
+    'function',[
+        'click',() => {
+            registerGrey.style.display = 'block';
+        }
     ]
 ],registerBox);
+//劳动登记页面灰色遮罩
+const registerGrey = addGrey(register);
+//劳动登记页面确认容器
+const registerSure = z.addElementByArray([
+    'div',
+    'style',[
+        'margin','calc((100vh - 65vw) / 2) 20vw',
+        'width','60vw',
+        'height','36vw',
+        'border-radius','3vw',
+        'background','#FFFFFF'
+    ]
+],registerGrey);
+//劳动登记页面确认容器文字信息
+setFontSize(4.5,8,z.addElementByArray([
+    'div',
+    'innerHTML','请确认信息是否无误!<br>是否确认提交？',
+    'style',[
+        'padding','4.75vw 0',
+        'width','60vw',
+        'height','16vw',
+        'border-bottom','0.5vw solid #f6b05e',
+        'text-align','center',
+        'color','#232325'
+    ]
+],registerSure));
+//劳动登记页面确认容器按钮
+for(let i = 0;i < 2;i++){
+    setFontSize(4.5,10,z.addElementByArray([
+        'div',
+        'innerHTML',['是','否'][i],
+        'style',[
+            'display','inline-block',
+            'vertical-align','top',
+            'width','29.75vw',
+            'height','10vw',
+            'border-right',['0.5vw solid #f6b05e',''][i],
+            'text-align','center',
+            'color','#232325'
+        ],
+        'function',[
+            'click',() => {
+                registerGrey.style.display = 'none';
+            }
+        ]
+    ],registerSure));
+}
 //劳动登记页面透明遮罩
 const registerNone = z.addElementByArray([
     'div',
