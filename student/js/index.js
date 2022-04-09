@@ -12,6 +12,7 @@ function setFontSize(fontSize,lineHeight,element){
         fontSize: z.getFontSize(fontSize),
         lineHeight: z.getFontSize(lineHeight)
     });
+    return element;
 }
 //设置增加页面方法
 z.setPage([

@@ -4,45 +4,117 @@ class TSelect{
         //当前选择选项的编号
         let code = 0;
         //选项值
-        let values = [];
-        Object.defineProperties(this,{
-            //版本信息
-            version: {
-                get: () => '1.0.0'
-            },
-            //作者信息
-            author: {
-                get: () => 'zdj0123'
-            },
+        let values;
+        //获取、修正选项值
+        if(Array.isArray(e.values)){
+            values = [...e.values];
+        }else{
+
+        }
+        //选项信息容器
+        let msgBox;
+        //选项信息
+        const msg = [];
+        //增加选项信息
+        let addMsg;
+        //值更改时执行的函数
+        let valueChangeFunction = () => {};
+        this.valueChangeFunction = valueChangeFunction;
+        //选项信息高度
+        let msgHeight;
+        //最大marginTop
+        let maxMarginTop;
+        //最小marginTop
+        let minMarginTop;
+        Object.defineProperties(this, {
             //设置信息
             set: {
                 get: () => e
             },
+            //选项
+            values: {
+                get(){
+                    return values;
+                }
+            },
             //选项数量
             number: {
-                get: () => values.length
+                get(){
+                    return values.length;
+                }
             },
             //当前选择选项的编号
             code: {
-                get: () => code
+                get(){
+                    return code;
+                },
+                set(sCode){
+                    if(sCode >= 0 && sCode < this.number){
+                        code = sCode;
+                        msgBox.style.marginTop = msgBox.style.marginTop = maxMarginTop - code * (e.line.height + msgHeight) + 'vh';
+                    }
+                }
             },
             //当前选择选项的值
             value: {
-                get: () => values[code]
+                get(){
+                    return values[code];
+                },
+                set(value){
+                    this.code = values.indexOf(value);
+                }
+            },
+            //选项信息容器
+            _msgBox: {
+                get(){
+                    return msgBox;
+                }
+            },
+            //选项信息
+            _msg: {
+                get(){
+                    return msg;
+                }
+            },
+            //增加选项信息
+            _addMag: {
+                get(){
+                    return addMsg;
+                }
+            },
+            //选项信息高度
+            _msgHeight: {
+                get(){
+                    return msgHeight;
+                }
+            },
+            //最大marginTop
+            _maxMarginTop: {
+                get(){
+                    return maxMarginTop;
+                },
+                set(sMaxMarginTop){
+                    maxMarginTop = sMaxMarginTop;
+                }
+            },
+            //最小marginTop
+            _minMarginTop: {
+                get(){
+                    return minMarginTop;
+                },
+                set(sMinMarginTop){
+                    minMarginTop = sMinMarginTop;
+                }
+            },
+            //值更改时执行的函数
+            _valueChangeFunction: {
+                set(Function){
+                    valueChangeFunction = Function; 
+                }
             }
         });
-        //获取、修正选项值
-        if(Array.isArray(e.values)){
-            if(e.values.length){
-                values = [...e.values];
-            }else{
-
-            }
-        }else{
-
-        }
         //创建zdjJs对象
-        let z = new zdjJs();
+        const z = new zdjJs;
         //创建容器
         let container = z.addElementByArray([
             'iframe',
@@ -52,12 +124,8 @@ class TSelect{
                 'border',0
             ]
         ],e.container);
-        //结束事件
-        let end;
-        //获取窗口
-        let w = container.contentWindow;
         //移出事件
-        let outFunction = (event) => {
+        const outFunction = (event) => {
             if(!event.touches){
                 if(event.clientX <= 0 || event.clientX >= w.innerWidth || event.clientY <= 0 || event.clientY >= w.innerHeight){
                     end();
@@ -68,25 +136,15 @@ class TSelect{
                 }
             }
         }
+        //获取窗口
+        const w = container.contentWindow;
         w.addEventListener('mouseout',outFunction);
         //更新容器
         container = w;
-        //当前对象
-        let o = this;
-        //选项信息高度
-        let msgHeight;
-        //最大marginTop
-        let maxMarginTop;
-        //最小marginTop
-        let minMarginTop;
-        //选项信息容器
-        let msgBox;
-        //选项信息
-        let msg = [];
-        //增加选项信息
-        let addMsg;
+        //结束事件
+        let end;
         //设置TSelect主要部分
-        let setTSelect = () => {
+        const setTSelect = () => {
             //更新容器
             container = container.document.body;
             //设置容器样式
@@ -110,7 +168,7 @@ class TSelect{
             //现在移动的距离
             let nowY;
             //开始事件
-            let start = (event) => {
+            const start = (event) => {
                 event.preventDefault();
                 clearInterval(timer);
                 if(!event.touches){
@@ -120,7 +178,7 @@ class TSelect{
                 }
             }
             //移动事件
-            let move = (event) => {
+            const move = (event) => {
                 event.preventDefault();
                 if(nowY != undefined){
                     lastY = nowY;
@@ -130,7 +188,7 @@ class TSelect{
                         nowY = event.touches[0].clientY;
                         outFunction(event);
                     }
-                    let setMargin = z.strRemove(msgBox.style.marginTop) + ((nowY - lastY) / w.innerHeight) * 100;
+                    const setMargin = z.strRemove(msgBox.style.marginTop) + ((nowY - lastY) / w.innerHeight) * 100;
                     if(setMargin > maxMarginTop){
                         msgBox.style.marginTop = maxMarginTop + 'vh';
                     }else if(setMargin < minMarginTop){
@@ -194,15 +252,17 @@ class TSelect{
                     'width','100%'
                 ]
             ],container);
-            let msgBoxReSet = () => {
+            const msgBoxReSet = () => {
                 //用于计算的选择线高度
-                let lineHeight = e.line.height;
+                const lineHeight = e.line.height;
                 //一次移动的距离
-                let marginMove = (lineHeight + msgHeight) / 50;
+                const marginMove = (lineHeight + msgHeight) / 50;
                 if(z.strRemove(msgBox.style.marginTop) >= maxMarginTop - (lineHeight + msgHeight / 2)){
                     if(z.strRemove(msgBox.style.marginTop) + marginMove >= maxMarginTop){
                         msgBox.style.marginTop = maxMarginTop + 'vh';
-                        code = 0;
+                        if(code != 0){
+                            valueChangeFunction(code = 0);
+                        }
                         clearInterval(timer);
                     }else{
                         msgBox.style.marginTop = z.strRemove(msgBox.style.marginTop) + marginMove + 'vh';
@@ -210,7 +270,9 @@ class TSelect{
                 }else if(z.strRemove(msgBox.style.marginTop) <= minMarginTop + msgHeight / 2){
                     if(z.strRemove(msgBox.style.marginTop) - marginMove <= minMarginTop){
                         msgBox.style.marginTop = minMarginTop + 'vh';
-                        code = values.length - 1;
+                        if(code != values.length - 1){
+                            valueChangeFunction(code = values.length - 1);
+                        }
                         clearInterval(timer);
                     }else{
                         msgBox.style.marginTop = z.strRemove(msgBox.style.marginTop) - marginMove + 'vh';
@@ -221,7 +283,9 @@ class TSelect{
                             if(z.strRemove(msgBox.style.marginTop) >= maxMarginTop - i * (lineHeight + msgHeight)){
                                 if(z.strRemove(msgBox.style.marginTop) - marginMove <= maxMarginTop - i * (lineHeight + msgHeight)){
                                     msgBox.style.marginTop = maxMarginTop - i * (lineHeight + msgHeight) + 'vh';
-                                    code = i;
+                                    if(code != i){
+                                        valueChangeFunction(code = i);
+                                    }
                                     clearInterval(timer);
                                     break;
                                 }else{
@@ -230,7 +294,9 @@ class TSelect{
                             }else{
                                 if(z.strRemove(msgBox.style.marginTop) + marginMove >= maxMarginTop - i * (lineHeight + msgHeight)){
                                     msgBox.style.marginTop = maxMarginTop - i * (lineHeight + msgHeight) + 'vh';
-                                    code = i;
+                                    if(code != i){
+                                        valueChangeFunction(code = i);
+                                    }
                                     clearInterval(timer);
                                     break;
                                 }else{
@@ -258,7 +324,7 @@ class TSelect{
                 ]);
             }
             //选项信息
-            for(let i = 0;i < o.number;i++){
+            for(let i in values){
                 msg[i] = addMsg(values[i]);
                 msgBox.appendChild(msg[i]);
             }
@@ -270,45 +336,71 @@ class TSelect{
         }else{
             setTSelect();
         }
-        //修改指定选项
-        this.changeValue = (uCode,uValue) => {
-            msg[uCode].innerHTML = values[uCode] = uValue;
+    }
+    //版本信息
+    get version(){
+        return '1.0.0';
+    }
+    //作者信息
+    get author(){
+        return 'zdj0123';
+    }
+    //修改指定选项
+    get changeValue(){
+        return function(code,value){
+            if(code >= 0 && code < this.values.length && !this.values.includes(value)){
+                this._msg[code].innerHTML = this.values[code] = value;
+            }
         }
-        //删除指定选项
-        this.deleteValue = (uCode) => {
-            values.splice(uCode,1);
-            msgBox.removeChild(msg[uCode]);
-            msg.splice(uCode,1);
-            minMarginTop = maxMarginTop - (this.number - 1) * (e.line.height + msgHeight);
-            //如果是最后一个
-            if(code == this.number){
-                //如果剩余选项数量大于0
-                if(this.number > 0){
-                    code--;
+    }
+    //删除指定选项
+    get deleteValue(){
+        return function(code){
+            if(code >= 0 && code < this.number){
+                this.values.splice(code,1);
+                this._msgBox.removeChild(this._msg[code]);
+                this._msg.splice(code,1);
+                this._minMarginTop = this._maxMarginTop - (this.number - 1) * (this.set.line.height + this._msgHeight);
+                let f = 0;
+                code == this.code?f = 1:0;
+                if(this.code == this.number){
+                    if(this.number > 0){
+                        this.code--;
+                    }
+                }else if(this.code > code){
+                    this.code--;
                 }
-                msgBox.style.marginTop = minMarginTop + 'vh';
-            }else if(code > uCode){
-                code--;
-                msgBox.style.marginTop = z.strRemove(msgBox.style.marginTop) + (e.line.height + msgHeight) + 'vh';
+                this._msgBox.style.marginTop = this._msgBox.style.marginTop = this._maxMarginTop - this.code * (this.set.line.height + this._msgHeight) + 'vh';
+                f?this.valueChangeFunction():0;
             }
         }
-        //在指定位置增加选项
-        this.addValue = (uValue,uCode) => {
-            let newMsg = addMsg(uValue);
-            if(uCode != undefined){
-                values.splice(uCode,0,uValue);
-                msgBox.insertBefore(newMsg,msg[uCode]);
-                msg.splice(uCode,0,newMsg);
+    }
+    //在指定位置增加选项
+    get addValue(){
+        return function(value,code){
+            const newMsg = this._addMag(value);
+            if(code != undefined){
+                this.values.splice(code,0,value);
+                this._msgBox.insertBefore(newMsg,this._msg[code]);
+                this._msg.splice(code,0,newMsg);
             }else{
-                values.push(uValue);
-                msg.push(newMsg);
-                msgBox.appendChild(newMsg);
+                this.values.push(value);
+                this._msg.push(newMsg);
+                this._msgBox.appendChild(newMsg);
+                code = 0;
             }
-            minMarginTop = maxMarginTop - (this.number - 1) * (e.line.height + msgHeight);
-            if(uCode <= code){
-                code++;
-                msgBox.style.marginTop = z.strRemove(msgBox.style.marginTop) - (e.line.height + msgHeight) + 'vh';
+            this._minMarginTop = this._maxMarginTop - (this.number - 1) * (this.set.line.height + this._msgHeight);
+            if(code <= this.code){
+                this.code++;
             }
+            this._msgBox.style.marginTop = this._msgBox.style.marginTop = this._maxMarginTop - this.code * (this.set.line.height + this._msgHeight) + 'vh';
+            this.number == 1?this.valueChangeFunction():0;
+        }
+    }
+    //设置值更改时执行的函数
+    get setValueChangeFunction(){
+        return function(Function){
+            this._valueChangeFunction = Function;
         }
     }
 }

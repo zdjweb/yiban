@@ -124,6 +124,57 @@ addRegisterMsgName('劳动时间');
 const registerActDate = addRegisterMsg('XXXX/XX/XX');
 registerActDate.className = 'registerMsg';
 registerActDate.style.textAlign = 'center';
+registerActDate.addEventListener('click',() => {
+    registerNone.style.display = 'block';
+    registerActDateSelectBox.style.display = 'block';
+    if(registerYearTSelect == null){
+        const nowDate = new Date;
+        const yearSelectBox = addSelectSetBox(registerActDateSelectBox);
+        Object.assign(yearSelectBox.style,{
+            display: 'inline-block',
+            verticalAlign: 'top',
+            width: '35vw'
+        });
+        const monthSelectBox = addSelectSetBox(registerActDateSelectBox);
+        Object.assign(monthSelectBox.style,{
+            display: 'inline-block',
+            verticalAlign: 'top',
+            width: '32.5vw'
+        });
+        const dateSelectBox = addSelectSetBox(registerActDateSelectBox);
+        Object.assign(dateSelectBox.style,{
+            display: 'inline-block',
+            verticalAlign: 'top',
+            width: '32.5vw'
+        });
+        const dateSet = () => {
+            const lastCode = registerDateTSelect.code;
+            while(registerDateTSelect.number){
+                registerDateTSelect.deleteValue(0);
+            }
+            const newDate = new Date(registerYearTSelect.code + 2021,registerMonthTSelect.code + 1,0);
+            for(let i = 1;i <= newDate.getDate();i++){
+                registerDateTSelect.addValue(i + '日');
+            }
+            registerDateTSelect.code = lastCode < newDate?lastCode:newDate - 1;
+        }
+        for(let i = 2021;i <= nowDate.getFullYear();i++){
+            registerYearSelect.push(i + '年');
+        }
+        registerYearTSelect = addTSelect(yearSelectBox,registerYearSelect);
+        registerYearTSelect.setValueChangeFunction(dateSet);
+        registerYearTSelect.code = nowDate.getFullYear() - 2021;
+        for(let i = 0;i < 12;i++){
+            registerMonthSelect.push(i + 1 + '月');
+        }
+        registerMonthTSelect = addTSelect(monthSelectBox,registerMonthSelect);
+        registerMonthTSelect.setValueChangeFunction(dateSet);
+        registerMonthTSelect.code = nowDate.getMonth();
+        registerDateTSelect = addTSelect(dateSelectBox,[]);
+        dateSet();
+        registerDateTSelect.code = nowDate.getDate() - 1;
+    }
+});
 //劳动登记页面劳动开始时间点击选择按钮
 const registerActStartTime = addRegisterMsg('XX:XX');
 registerActStartTime.className = 'registerMsg';
@@ -426,3 +477,22 @@ addSelectSureBtn(registerActDepartmentSelectBox).addEventListener('click',() => 
 //劳动登记页面劳动类别选择容器分割线
 addSelectHr(registerActDepartmentSelectBox);
 let registerActDepartmentTSelect = null;
+
+//劳动登记页面劳动日期选项
+const registerYearSelect = [];
+const registerMonthSelect = [];
+//劳动登记页面劳动类别选择容器
+const registerActDateSelectBox = addSelectBox(registerNone);
+//劳动登记页面劳动类别选择确认按钮
+addSelectSureBtn(registerActDateSelectBox).addEventListener('click',() => {
+    const date = new Date();
+    date.setFullYear(registerYearTSelect.value.replace('年',''));
+    date.setMonth(registerMonthTSelect.value.replace('月','') - 1);
+    date.setDate(registerDateTSelect.value.replace('日',''));
+    registerActDate.innerHTML = z.getTime('Y/M/D',date);
+});
+//劳动登记页面劳动类别选择容器分割线
+addSelectHr(registerActDateSelectBox);
+let registerYearTSelect = null;
+let registerMonthTSelect = null;
+let registerDateTSelect = null;

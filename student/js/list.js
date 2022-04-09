@@ -165,7 +165,7 @@ function addListMsg(innerHTML,container){
 }
 //创建劳动活动报名页面按钮
 function addListBtn(innerHTML,container){
-    setFontSize(4,8,z.addElementByArray([
+    return setFontSize(4,8,z.addElementByArray([
         'div',
         'innerHTML',innerHTML,
         'style',[
@@ -211,7 +211,9 @@ function addListBox1(name,grade,startTime,endTime,type,address){
     //劳动活动报名页面未报名活动劳动地点信息
     addListMsg(address,newListBox).style.height = 'auto';
     //创建劳动活动报名页面未报名活动报名按钮
-    addListBtn('提交报名',newListBox);
+    addListBtn('提交报名',newListBox).addEventListener('click',() => {
+        listGrey.style.display = 'block';
+    });
     listBoxCssReSet(0);
 }
 //劳动活动报名页面已报名活动信息容器
@@ -370,7 +372,9 @@ function addListBox2(name,grade,startTime,endTime,type,address){
         ]
     ],listActImgAndBtnBox);
     //创建劳动活动报名页面已报名活动报名按钮
-    addListBtn('提交审核',newListBox);
+    addListBtn('提交审核',newListBox).addEventListener('click',() => {
+        listGrey.style.display = 'block';
+    });;
     listBoxCssReSet(1);
 }
 //劳动活动报名页面活动信息容器背景位置重设
@@ -395,3 +399,50 @@ addListBox2('啊哈哈，鸡汤来了！...这喝汤多是一件美事啊！...�
 addListBox2('吃饭',0,'1638754200','1638757800',0,'福建省龙岩市新罗区东肖北路1号龙岩学院');
 addListBox2('睡觉',1,'1638766800','1638772200',1,'福建省龙岩市新罗区东肖北路1号龙岩学院');
 addListBox2('打豆豆',0,'1638772200','1638790200',2,'龙岩学院');
+//劳动登记页面灰色遮罩
+const listGrey = addGrey(list);
+//劳动登记页面确认容器
+const listSure = z.addElementByArray([
+    'div',
+    'style',[
+        'margin','calc((100vh - 59vw) / 2) 20vw',
+        'width','60vw',
+        'height','30vw',
+        'border-radius','3vw',
+        'background','#FFFFFF'
+    ]
+],listGrey);
+//劳动登记页面确认容器文字信息
+setFontSize(4.5,8,z.addElementByArray([
+    'div',
+    'innerHTML','是否确认提交？',
+    'style',[
+        'padding','5.75vw 0',
+        'width','60vw',
+        'height','8vw',
+        'border-bottom','0.5vw solid #f6b05e',
+        'text-align','center',
+        'color','#232325'
+    ]
+],listSure));
+//劳动登记页面确认容器按钮
+for(let i = 0;i < 2;i++){
+    setFontSize(4.5,10,z.addElementByArray([
+        'div',
+        'innerHTML',['是','否'][i],
+        'style',[
+            'display','inline-block',
+            'vertical-align','top',
+            'width','29.75vw',
+            'height','10vw',
+            'border-right',['0.5vw solid #f6b05e',''][i],
+            'text-align','center',
+            'color','#232325'
+        ],
+        'function',[
+            'click',() => {
+                listGrey.style.display = 'none';
+            }
+        ]
+    ],listSure));
+}
