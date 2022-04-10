@@ -113,7 +113,7 @@ registerActType.addEventListener('click',function(){
     registerNone.style.display = 'block';
     registerTypeSelectBox.style.display = 'block';
     if(registerTypeTSelect == null){
-        registerTypeTSelect = addTSelect(addSelectSetBox(registerTypeSelectBox),registerTypeSelect);
+        registerTypeTSelect = addTSelect(addSelectSetBox(registerTypeSelectBox),['日常生活劳动','生产劳动','服务性劳动']);
     }
 });
 //劳动登记页面信息分割线
@@ -158,16 +158,16 @@ registerActDate.addEventListener('click',() => {
             }
             registerDateTSelect.code = lastCode < newDate?lastCode:newDate - 1;
         }
+        registerYearTSelect = addTSelect(yearSelectBox,[]);
         for(let i = 2021;i <= nowDate.getFullYear();i++){
-            registerYearSelect.push(i + '年');
+            registerYearTSelect.addValue(i + '年');
         }
-        registerYearTSelect = addTSelect(yearSelectBox,registerYearSelect);
         registerYearTSelect.setValueChangeFunction(dateSet);
         registerYearTSelect.code = nowDate.getFullYear() - 2021;
+        registerMonthTSelect = addTSelect(monthSelectBox,[]);
         for(let i = 0;i < 12;i++){
-            registerMonthSelect.push(i + 1 + '月');
+            registerMonthTSelect.addValue(i + 1 + '月');
         }
-        registerMonthTSelect = addTSelect(monthSelectBox,registerMonthSelect);
         registerMonthTSelect.setValueChangeFunction(dateSet);
         registerMonthTSelect.code = nowDate.getMonth();
         registerDateTSelect = addTSelect(dateSelectBox,[]);
@@ -175,6 +175,35 @@ registerActDate.addEventListener('click',() => {
         registerDateTSelect.code = nowDate.getDate() - 1;
     }
 });
+const timeTSelectSet = () => {
+    registerNone.style.display = 'block';
+    registerActTimeSelectBox.style.display = 'block';
+    if(registerHourTSelect == null){
+        const hourSelectBox = addSelectSetBox(registerActTimeSelectBox);
+        Object.assign(hourSelectBox.style,{
+            display: 'inline-block',
+            verticalAlign: 'top',
+            width: '50vw'
+        });
+        const minuteSelectBox = addSelectSetBox(registerActTimeSelectBox);
+        Object.assign(minuteSelectBox.style,{
+            display: 'inline-block',
+            verticalAlign: 'top',
+            width: '50vw'
+        });
+        registerHourTSelect = addTSelect(hourSelectBox,[]);
+        for(let i = 0;i < 24;i++){
+            registerHourTSelect.addValue((i < 10?'0' + i:i) + '时');
+        }
+        registerMinuteTSelect = addTSelect(minuteSelectBox,[]);
+        for(let i = 0;i < 60;i++){
+            registerMinuteTSelect.addValue((i < 10?'0' + i:i) + '分');
+        }
+        const nowDate = new Date;
+        registerHourTSelect.code = nowDate.getHours();
+        registerMinuteTSelect.code = nowDate.getMinutes();
+    }
+};
 //劳动登记页面劳动开始时间点击选择按钮
 const registerActStartTime = addRegisterMsg('XX:XX');
 registerActStartTime.className = 'registerMsg';
@@ -182,6 +211,14 @@ Object.assign(registerActStartTime.style,{
     margin: '3vw 0 0 20vw',
     width: '15vw',
     textAlign: 'center'
+});
+registerActStartTime.addEventListener('click',() => {
+    registerTimeSelectType = 0;
+    if(registerHourStart != null){
+        registerHourTSelect.value = registerHourStart + '时';
+        registerMinuteTSelect.value = registerMinuteStart + '分';
+    }
+    timeTSelectSet();
 });
 //劳动登记页面“至”字
 const registerTo = z.addElementByArray([
@@ -206,6 +243,14 @@ Object.assign(registerActEndTime.style,{
     margin: '3vw 0 0 0',
     width: '15vw',
     textAlign: 'center'
+});
+registerActEndTime.addEventListener('click',() => {
+    registerTimeSelectType = 1;
+    if(registerHourEnd != null){
+        registerHourTSelect.value = registerHourEnd + '时';
+        registerMinuteTSelect.value = registerMinuteEnd + '分';
+    }
+    timeTSelectSet();
 });
 //劳动登记页面劳动时间统计信息
 const registerActTime = z.addElementByArray([
@@ -235,7 +280,7 @@ registerActDepartment.addEventListener('click',() => {
     registerNone.style.display = 'block';
     registerActDepartmentSelectBox.style.display = 'block';
     if(registerActDepartmentTSelect == null){
-        registerActDepartmentTSelect = addTSelect(addSelectSetBox(registerActDepartmentSelectBox),registerActDepartmentSelect);
+        registerActDepartmentTSelect = addTSelect(addSelectSetBox(registerActDepartmentSelectBox),['校级','院级']);
     }
 });
 //劳动登记页面信息分割线
@@ -454,8 +499,6 @@ const registerNone = z.addElementByArray([
         'background','rgba(0,0,0,0)'
     ]
 ],register);
-//劳动登记页面劳动类别选项
-const registerTypeSelect = ['日常生活劳动','生产劳动','服务性劳动'];
 //劳动登记页面劳动类别选择容器
 const registerTypeSelectBox = addSelectBox(registerNone);
 //劳动登记页面劳动类别选择确认按钮
@@ -466,24 +509,9 @@ addSelectSureBtn(registerTypeSelectBox).addEventListener('click',() => {
 addSelectHr(registerTypeSelectBox);
 let registerTypeTSelect = null;
 
-//劳动登记页面劳动类别选项
-const registerActDepartmentSelect = ['校级','院级'];
-//劳动登记页面劳动类别选择容器
-const registerActDepartmentSelectBox = addSelectBox(registerNone);
-//劳动登记页面劳动类别选择确认按钮
-addSelectSureBtn(registerActDepartmentSelectBox).addEventListener('click',() => {
-    registerActDepartment.innerHTML = registerActDepartmentTSelect.value;
-});
-//劳动登记页面劳动类别选择容器分割线
-addSelectHr(registerActDepartmentSelectBox);
-let registerActDepartmentTSelect = null;
-
-//劳动登记页面劳动日期选项
-const registerYearSelect = [];
-const registerMonthSelect = [];
-//劳动登记页面劳动类别选择容器
+//劳动登记页面劳动日期选择容器
 const registerActDateSelectBox = addSelectBox(registerNone);
-//劳动登记页面劳动类别选择确认按钮
+//劳动登记页面劳动日期选择确认按钮
 addSelectSureBtn(registerActDateSelectBox).addEventListener('click',() => {
     const date = new Date();
     date.setFullYear(registerYearTSelect.value.replace('年',''));
@@ -491,8 +519,43 @@ addSelectSureBtn(registerActDateSelectBox).addEventListener('click',() => {
     date.setDate(registerDateTSelect.value.replace('日',''));
     registerActDate.innerHTML = z.getTime('Y/M/D',date);
 });
-//劳动登记页面劳动类别选择容器分割线
+//劳动登记页面劳动日期选择容器分割线
 addSelectHr(registerActDateSelectBox);
 let registerYearTSelect = null;
 let registerMonthTSelect = null;
 let registerDateTSelect = null;
+
+//劳动登记发布组织类别选择容器
+const registerActDepartmentSelectBox = addSelectBox(registerNone);
+//劳动登记页面发布组织选择确认按钮
+addSelectSureBtn(registerActDepartmentSelectBox).addEventListener('click',() => {
+    registerActDepartment.innerHTML = registerActDepartmentTSelect.value;
+});
+//劳动登记页面发布组织选择容器分割线
+addSelectHr(registerActDepartmentSelectBox);
+let registerActDepartmentTSelect = null;
+
+//劳动登记发布组织类别选择容器
+const registerActTimeSelectBox = addSelectBox(registerNone);
+//劳动登记页面发布组织选择确认按钮
+addSelectSureBtn(registerActTimeSelectBox).addEventListener('click',() => {
+    if(registerTimeSelectType){
+        registerHourEnd = registerHourTSelect.value.replace('时','');
+        registerMinuteEnd = registerMinuteTSelect.value.replace('分','');
+        registerActEndTime.innerHTML = registerHourEnd + ':' + registerMinuteEnd;
+    }else{
+        registerHourStart = registerHourTSelect.value.replace('时','');
+        registerMinuteStart = registerMinuteTSelect.value.replace('分','');
+        registerActStartTime.innerHTML = registerHourStart + ':' + registerMinuteStart;
+    }
+    registerActTime.innerHTML = '共' + ((((+registerHourEnd) - (+registerHourStart)) * 60 + (+registerMinuteEnd) - (+registerMinuteStart)) / 60).toFixed(2) + '小时';
+});
+//劳动登记页面发布组织选择容器分割线
+addSelectHr(registerActTimeSelectBox);
+let registerHourTSelect = null;
+let registerMinuteTSelect = null;
+let registerTimeSelectType = 0;
+let registerHourStart = null;
+let registerMinuteStart = null;
+let registerHourEnd = null;
+let registerMinuteEnd = null;
